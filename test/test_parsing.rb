@@ -48,11 +48,31 @@ class TestParsing < TestCase
   end
 
   def test_handle_daylight_savings_transitions
+    # From Standard to Daylight Savings
     time = parse_now("3/10/2019 12:35:04 PM")
     assert_equal Time.local(2019, 3, 10, 12, 35, 04), time
 
+    time = parse_now("3/10/2019 00:24:01")
+    assert_equal Time.local(2019, 3, 10, 00, 24, 01), time
+
+    time = parse_now("3/10/2019 01:24:01")
+    assert_equal Time.local(2019, 3, 10, 01, 24, 01), time
+
+    time = parse_now("3/10/2019 02:24:01")
+    assert_equal Time.local(2019, 3, 10, 02, 24, 01), time
+
+    # From Daylight Savings to Standard
     time = parse_now("11/3/2019 11:35:04 PM")
     assert_equal Time.local(2019, 11, 3, 23, 35, 04), time
+
+    time = parse_now("11/3/2019 00:35:04 AM")
+    assert_equal Time.local(2019, 11, 3, 00, 35, 04), time
+
+    time = parse_now("11/3/2019 01:35:04 AM")
+    assert_equal Time.local(2019, 11, 3, 01, 35, 04), time
+
+    time = parse_now("11/3/2019 02:35:04 AM")
+    assert_equal Time.local(2019, 11, 3, 02, 35, 04), time
   end
 
   def test_handle_rmn_sd

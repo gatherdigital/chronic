@@ -84,6 +84,11 @@ module Chronic
         offset_fix = midnight.gmt_offset - tomorrow_midnight.gmt_offset
         tomorrow_midnight += offset_fix
 
+        dst_offset = 0
+        if @now.utc_offset != tomorrow_midnight.utc_offset
+          dst_offset = tomorrow_midnight.utc_offset - @now.utc_offset
+        end
+
         catch :done do
           if pointer == :future
             if @type.ambiguous?
@@ -91,7 +96,7 @@ module Chronic
                 (@current_time = t; throw :done) if t >= @now
               end
             else
-              [midnight + @type.time + offset_fix, tomorrow_midnight + @type.time].each do |t|
+              [midnight + @type.time + offset_fix + dst_offset, tomorrow_midnight + @type.time].each do |t|
                 (@current_time = t; throw :done) if t >= @now
               end
             end
